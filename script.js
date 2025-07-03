@@ -43,27 +43,84 @@ function handleClick(e) {
 }
 
 function computerMove() {
-  const availableCells = [...cellElements].filter(cell => !cell.classList.contains('x') && !cell.classList.contains('circle'));
-  if (availableCells.length === 0) return; // No available cells, return
+  const bestMove = getBestMove();
+  if (bestMove !== -1) {
+    placeMark(cellElements[bestMove], 'circle');
 
-  const randomIndex = Math.floor(Math.random() * availableCells.length);
-  const randomCell = availableCells[randomIndex];
-  
-  placeMark(randomCell, 'circle');
+    if (checkWin('circle')) {
+      statusMessage.textContent = "Computer Wins!";
+      endGame();
+      return;
+    } else if (isDraw()) {
+      statusMessage.textContent = "It's a Draw!";
+      endGame();
+      return;
+    }
 
-  if (checkWin('circle')) {
-    statusMessage.textContent = "Computer Wins!";
-    endGame();
-    return;
-  } else if (isDraw()) {
-    statusMessage.textContent = "It's a Draw!";
-    endGame();
-    return;
+    // After computer's move, switch back to player
+    isCircleTurn = false;
+    statusMessage.textContent = "Your turn";
   }
+}
 
-  // After computer's move, switch back to player
-  isCircleTurn = false;
-  statusMessage.textContent = "Your turn";
+function getBestMove() {
+  let bestScore = -Infinity;
+  let bestMove = -1;
+  
+  for (let i = 0; i < 9; i++) {
+    if (!cellElements[i].classList.contains('x') && !cellElements[i].classList.contains('circle')) {
+      // Try this move
+      cellElements[i].classList.add('circle');
+      let score = minimax(false, 0);
+      cellElements[i].classList.remove('circle');
+      
+      if (score > bestScore) {
+        bestScore = score;
+        bestMove = i;
+      }
+    }
+  }
+  
+  return bestMove;
+}
+
+function minimax(isMaximizing, depth) {
+  // Check terminal states
+  if (checkWin('circle')) {
+    return 10 - depth; // AI wins, prefer winning sooner
+  }
+  if (checkWin('x')) {
+    return depth - 10; // Player wins, prefer losing later
+  }
+  if (isDraw()) {
+    return 0; // Draw
+  }
+  
+  if (isMaximizing) {
+    // AI's turn (maximizing)
+    let bestScore = -Infinity;
+    for (let i = 0; i < 9; i++) {
+      if (!cellElements[i].classList.contains('x') && !cellElements[i].classList.contains('circle')) {
+        cellElements[i].classList.add('circle');
+        let score = minimax(false, depth + 1);
+        cellElements[i].classList.remove('circle');
+        bestScore = Math.max(score, bestScore);
+      }
+    }
+    return bestScore;
+  } else {
+    // Player's turn (minimizing)
+    let bestScore = Infinity;
+    for (let i = 0; i < 9; i++) {
+      if (!cellElements[i].classList.contains('x') && !cellElements[i].classList.contains('circle')) {
+        cellElements[i].classList.add('x');
+        let score = minimax(true, depth + 1);
+        cellElements[i].classList.remove('x');
+        bestScore = Math.min(score, bestScore);
+      }
+    }
+    return bestScore;
+  }
 }
 
 function placeMark(cell, currentClass) {

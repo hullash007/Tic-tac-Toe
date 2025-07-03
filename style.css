@@ -2,11 +2,32 @@ body {
   font-family: Arial, sans-serif;
   text-align: center;
   background-color: #f4f4f4;
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .container {
-  display: inline-block;
-  margin-top: 50px;
+  background: white;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 400px;
+  width: 100%;
+}
+
+.warning {
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 5px;
+  color: #856404;
+  padding: 10px;
+  margin: 15px 0;
+  font-weight: bold;
+  font-size: 0.9em;
 }
 
 #game-board {
@@ -14,7 +35,8 @@ body {
   grid-template-columns: repeat(3, 100px);
   grid-template-rows: repeat(3, 100px);
   gap: 5px;
-  margin-bottom: 20px;
+  margin: 20px auto;
+  justify-content: center;
 }
 
 .cell {
@@ -26,25 +48,53 @@ body {
   align-items: center;
   font-size: 2em;
   cursor: pointer;
-  border: 2px solid #000;
+  border: 2px solid #333;
+  border-radius: 8px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  user-select: none;
+}
+
+.cell:hover:not(.x):not(.circle) {
+  background-color: #f0f0f0;
+  transform: scale(1.02);
+}
+
+.cell.x,
+.cell.circle {
+  cursor: not-allowed;
 }
 
 #status-message {
-  font-size: 1.5em;
-  margin-bottom: 10px;
+  font-size: 1.3em;
+  margin: 15px 0;
+  font-weight: bold;
+  color: #333;
+  min-height: 1.5em;
 }
 
 button {
-  padding: 10px 20px;
-  font-size: 1.2em;
+  padding: 12px 24px;
+  font-size: 1.1em;
   cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
 }
+
+button:hover {
+  background-color: #0056b3;
+}
+
 .x::before {
   content: 'X';
-  color: red;
+  color: #e74c3c;
+  font-weight: bold;
 }
 
 .circle::before {
   content: 'O';
-  color: blue;
+  color: #3498db;
+  font-weight: bold;
 }
